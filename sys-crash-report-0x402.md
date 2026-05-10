@@ -1,4 +1,3 @@
-# JavaApp0701 – Kompletan kod projekta
 
 ---
 Kreiramo bazu podataka sa tabelama i maven projekat
@@ -1010,6 +1009,7 @@ public class JavaApp0701 {
 ```
 
 ## Ceste greske
+- ne mora poseban import za jpa. Takodje kad koristis "Entity class from database" vidi da importovi u generisanoj klasi glase jakarta.persistence umesto javax.persistence
 - Switch bez break → svi case-ovi se izvršavaju (fall-through)
 - (Date) cast umesto new java.sql.Date(utilDate.getTime()) → ClassCastException
 - Zamenjeni redosled parametara u PreparedStatement → INSERT u pogrešne kolone
@@ -1019,3 +1019,4 @@ public class JavaApp0701 {
 - na skolskim racunarima maven ne radi u student useru, mora na boljoj lokaciji.
 - Preimenovati zvanjeId u zvanje zbog prakticnosti
 - los import za npr Session
+- izbrisati `<property name="jakarta.persistence.schema-generation.database.action" value="create"/>` iz persistence.xml

@@ -22,12 +22,14 @@ public class JPAPredavacRepository implements PredavacRepository {
 
     private final EntityManagerFactory emf;
 
-    public JPAPredavacRepository(EntityManagerFactory emf) {
+    public JPAPredavacRepository(@Qualifier("emf") EntityManagerFactory emf) {
         this.emf = emf;
     }
 
     @Override
     public void save(Predavac predavac) {
+        
+        System.out.println("EMF implementacija: " + emf.getClass().getName());
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();

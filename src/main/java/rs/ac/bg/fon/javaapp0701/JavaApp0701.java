@@ -70,8 +70,8 @@ public class JavaApp0701 {
         Zvanje z = new Zvanje(2L);         // row with id=1 already in DB
 
         PredavacDto p = new PredavacDto();
-        p.setIme("Ilija2");
-        p.setPrezime("Petrovic2");
+        p.setIme("Ilija5");
+        p.setPrezime("Petrovic5");
         p.setDatumRodjenja(new Date());
         p.setKatedraId(k); // just sets the FK reference
         p.setZvanjeId(z); // p.id is null — DB will generate it

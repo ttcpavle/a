@@ -20,17 +20,12 @@ import rs.ac.bg.fon.javaapp0701.repository.PredavacRepository;
 import rs.ac.bg.fon.javaapp0701.service.PredavacService;
 import rs.ac.bg.fon.javaapp0701.service.impl.PredavacServiceImpl;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import rs.ac.bg.fon.javaapp0701.repository.impl.HibernatePredavacRepository;
-import rs.ac.bg.fon.javaapp0701.repository.impl.JDBCPredavacRepository;
-import rs.ac.bg.fon.javaapp0701.repository.impl.JPAPredavacRepository;
-import rs.ac.bg.fon.javaapp0701.repository.impl.SpringJDBCPredavacRepository;
 
 /**
  *
  * @author totic
  */
 
-@Configuration
 @ComponentScan(basePackages = "rs.ac.bg.fon.javaapp0701")
 public class AppConfig {
 
@@ -72,15 +67,17 @@ public class AppConfig {
         return d;
     }
 
-    @Bean
-    @Primary  // koristi se ovaj kao ima vise kandidata. Ovaj i SessionFactory se gledaju kao isti tip
+    @Bean(value="emf")
     public EntityManagerFactory entityManagerFactory() {
         return Persistence.createEntityManagerFactory(PU_NAME);
     }
 
-    @Bean
-    public SessionFactory sessionFactory(EntityManagerFactory emf) {
-        return emf.unwrap(SessionFactory.class);
+
+    @Bean(value="session")
+    public SessionFactory sessionFactory() {
+        return new org.hibernate.cfg.Configuration()
+                       .configure()  // automatski traži hibernate.cfg.xml na classpath-u
+                       .buildSessionFactory();
     }
     
     @Bean

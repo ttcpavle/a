@@ -13,6 +13,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import rs.ac.bg.fon.javaapp0701.domain.Predavac;
 import rs.ac.bg.fon.javaapp0701.repository.PredavacRepository;
@@ -26,7 +27,8 @@ public class HibernatePredavacRepository implements PredavacRepository {
 
     private final SessionFactory sessionFactory;
 
-    public HibernatePredavacRepository(SessionFactory sessionFactory) {
+    @Autowired
+    public HibernatePredavacRepository(@Qualifier("session")SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -37,6 +39,7 @@ public class HibernatePredavacRepository implements PredavacRepository {
     // transakcija commmit ili rollback
     @Override
     public void save(Predavac predavac) {
+        System.out.println("EMF implementacija: " + sessionFactory.getClass().getName());
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
             try {
