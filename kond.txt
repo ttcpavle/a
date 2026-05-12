@@ -1,0 +1,113 @@
+function [x,fval] = MetodaIteracije(f,g,q,x0,tol)
+
+x = g(x0);
+fprintf('0: %.6f    %.6f\n',x0,f(x0));
+fprintf('1: %.6f    %.6f\n',x,f(x));
+
+k = ceil(log((1-q)*tol/abs(x-x0))/log(q));
+for i=2:k
+    xOld = x;
+    x = g(x);
+    fval = f(x);
+    fprintf('%d: %.6f    %.6f\n',i,x,fval);
+    if abs(x-xOld)<tol*(1-q)/q
+        break;
+    end
+end
+
+end
+
+% 1 deo:
+% naci interval izolacije - nacrtati funkciju x i g(x) ili naci xZero = fzero(f,[a,b]);
+
+% 2 deo:
+% zatim naci q=-min(-|g'(x)|) na [a,b] i videti da li je q<1:
+% napravi g_za_q=-abs(<izvod g>)
+% [x,fval]=fminbnd(g_za_q,3,4) i onda q=-fval
+% moguce je da se q popravi ili promenom intervala i x0 ili promenom
+% funkcije g
+
+% 3 deo:
+% kreiranje funkcije za iteraciju. Nalazenje broja iteracija i provera
+% aposteriorne greske kao kriterijum zaustavljanja iteracije 
+
+function [x, fval] = MetodaTangenti(f,df,x0,n,tol)
+
+% iteracija
+fprintf("0. %f    %f\n", x0, f(x0));
+x = x0;
+for i = 1:n
+    xOld = x;
+    x = xOld - f(xOld)/df(xOld);
+    fval = f(x);
+    fprintf("%d. %f     %f\n", i, x, fval);
+    if abs(x - xOld) < tol || abs(fval) < tol
+        break;
+    end
+
+end
+
+% 1 deo:
+% - naci interval izolacije pomocu plotovanja 2 funkcije i nalazenja
+% preseka vizualeno ili preko fzero
+% - proveriti uslove za njutnovu metodu:
+% f(a)*f(b)<0
+% f(x),f'(x),f"(x) neprekidno diferencijabilne
+% f' i f" stalnog znaka na [a,b]
+
+% f' i f" mozemo naci preko sym(f),df=diff(f),df=matlabFunction(df)
+% - provera uslova f(x0)*f"(x0)>0 za x0
+
+% 2 deo:
+% funkcija sa iteracijom. Videti sta se koristi kao kriterijum
+% zaustalvjanja
+
+function [x] = Jakobi(A, b, n)
+    D = diag(diag(A));
+    B = inv(D)*(D-A);
+    c = inv(D)*b;
+    x = c; % ovde stavi pocetnu vrednost ako je zadata
+    for k = 1:n
+        xOld=x;
+        x = B * xOld + c;
+        disp(x');
+    end
+
+% ocena greske
+Bnorm = norm(B,"inf");
+err = Bnorm/(1-Bnorm)*norm(x-xOld,"inf");
+fprintf("ocena greske = %.10f\n", err);    
+end
+
+% 1 deo
+% prebaci sistem u oblik tako da A bude dijagonalno dominanta
+% x=Bx+c
+% uzmi x0=c
+
+% 2 deo
+% iteracija. Racunati k za dovoljan broj iteracija ako treba
+% k >= (ln(tol(1-Bnorm)/Cnorm)/ln(Bnorm) -1
+
+% 3 deo
+% ocena greske iz formule
+
+function [x] = GausZajdel(A, b, n)
+    D = diag(diag(A));
+    B = inv(D)*(D-A);
+    c = inv(D)*b;
+    B1 = tril(B);
+    B2 = triu(B);
+    I = eye(length(A));
+    x = c; % ovde stavi pocetnu vrednost ako je zadata
+    format long
+    for k = 1:n
+        xOld = x;
+        x = inv(I-B1)*(B2*xOld + c);
+        disp(x');
+    end
+
+% ocena greske
+Bnorm = norm(B,"inf");
+err = Bnorm/(1-Bnorm)*norm(x-xOld,"inf");
+fprintf("ocena greske = %.10f\n", err);
+end
